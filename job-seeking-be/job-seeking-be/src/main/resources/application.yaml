@@ -1,8 +1,23 @@
-server:
-  port: 8080
-
 spring:
+  application:
+    name: JobIT
+
   datasource:
-    url: "jdbc:mysql://localhost:3307/jobSeeking"
+    url: jdbc:mysql://localhost:3306/job-it-db
     username: root
-    password: admin123
+    password: 123456
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        default_schema: public
+        format_sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
+    open-in-view: false
+
+  main:
+    allow-circular-references: true
