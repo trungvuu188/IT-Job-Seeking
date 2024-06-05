@@ -1,7 +1,7 @@
 package com.jobseeking.jobseekingbe.service;
 
 import com.jobseeking.jobseekingbe.dto.request.UserCreationRequest;
-import com.jobseeking.jobseekingbe.dto.response.UserDTO;
+import com.jobseeking.jobseekingbe.entity.Candidate;
 import com.jobseeking.jobseekingbe.entity.Role;
 import com.jobseeking.jobseekingbe.entity.User;
 import com.jobseeking.jobseekingbe.repository.RoleRepository;
@@ -34,6 +34,20 @@ public class UserService implements UserServiceImp {
                 .password(userCreationRequest.getPassword())
                 .role(role)
                 .build();
+        if (role.getRoleName().equals("ADMIN")) {
+//            DO something admin
+        }
+
+        if (role.getRoleName().equals("EMPLOYEE")) {
+            Candidate candidate = new Candidate();
+        }
+
+        if (role.getRoleName().equals("EMPLOYER")) {
+            Candidate candidate = new Candidate();
+        }
+
+
+
 
         return userRepository.save(user);
     }

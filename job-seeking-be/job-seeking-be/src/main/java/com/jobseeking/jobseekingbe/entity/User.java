@@ -26,4 +26,8 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     Role role;
+
+    @OneToOne()
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    Candidate candidate;
 }
