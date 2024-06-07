@@ -20,7 +20,7 @@ public class AuthenticationController {
 
     AuthenticationServiceImp authenticationServiceImp;
 
-    @PostMapping()
+    @PostMapping("/login")
     ResponseEntity<ApiResponse> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
 
         ApiResponse<AuthenticationResponse> apiResponse = new ApiResponse<>();

@@ -3,7 +3,7 @@ spring:
     name: JobIT
 
   datasource:
-    url: jdbc:mysql://localhost:3306/job-it-db
+    url: jdbc:mysql://localhost:3306/it_job
     username: root
     password: 123456
 
