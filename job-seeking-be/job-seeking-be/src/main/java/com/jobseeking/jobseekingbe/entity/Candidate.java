@@ -1,53 +1,65 @@
 package com.jobseeking.jobseekingbe.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
 
+
 @Entity(name = "candidates")
+@Data
+@PrimaryKeyJoinColumn(name="user_id")
 @NoArgsConstructor
-@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Candidate extends User {
 
-    @OneToOne(mappedBy = "candidates")
-    User user;
-
-    @Column(name = "fullname")
-    String fullname;
+    @Column(name = "avatar")
+    String avatar;
 
     @Column(name = "dob")
     Date dob;
 
-    @Column(name = "dob")
+    @Column(name = "position")
     String position;
-    String currenSalary;
+
+    @Column(name = "current_salary")
+    String currentSalary;
+
+    @Column(name = "self_desc")
     String selfDesc;
+
+    @Column(name = "gender")
     String gender;
+
+    @Column(name = "age")
     int age;
+
+    @Column(name = "salary_expect")
     String salaryExpect;
+
+    @Column(name = "facebook")
     String facebook;
+
+    @Column(name = "linkedin")
     String linkedin;
+
+    @Column(name = "location")
     String location;
 
-
-//    avatar text,
-//    fullname varchar(100),
-//    dob timestamp,
-//    position varchar(255),
-//    currentSalary varchar(255),
-//    self_desc text,
-//    gender enum('male', 'female'),
-//    age int,
-//    salary_expect varchar(255),
-//    facebook varchar(255),
-//    linkedin varchar(255),
-//    location varchar(255),
+    @Builder
+    public Candidate(String email, String password, String phone, Role role, String avatar, Date dob, String position, String currentSalary, String selfDesc, String gender, int age, String salaryExpect, String facebook, String linkedin, String location) {
+        super(email, password, phone, role);
+        this.avatar = avatar;
+        this.dob = dob;
+        this.position = position;
+        this.currentSalary = currentSalary;
+        this.selfDesc = selfDesc;
+        this.gender = gender;
+        this.age = age;
+        this.salaryExpect = salaryExpect;
+        this.facebook = facebook;
+        this.linkedin = linkedin;
+        this.location = location;
+    }
 }

@@ -6,3 +6,17 @@ spring:
     url: "jdbc:mysql://localhost:3307/jobSeeking"
     username: root
     password: admin123
+  mail:
+    host: live.smtp.mailtrap.io
+    port: 587
+    username: api
+    password: 34bb364b211bf52780c5e9ed4155b779
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+jwt:
+  signerKey: "LHdv9EVi3BKZeBHVBzqPE35+0PzgIPPlEkDa+8WSugOj+QAXKDO3DfjPDhSYmkjN"

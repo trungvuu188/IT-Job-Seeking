@@ -1,10 +1,8 @@
 package com.jobseeking.jobseekingbe.service;
 
 import com.jobseeking.jobseekingbe.dto.request.UserCreationRequest;
-import com.jobseeking.jobseekingbe.entity.Candidate;
-import com.jobseeking.jobseekingbe.entity.Role;
+import com.jobseeking.jobseekingbe.dto.response.UserDTO;
 import com.jobseeking.jobseekingbe.entity.User;
-import com.jobseeking.jobseekingbe.repository.RoleRepository;
 import com.jobseeking.jobseekingbe.repository.UserRepository;
 import com.jobseeking.jobseekingbe.service.imp.UserServiceImp;
 import lombok.AccessLevel;
@@ -12,43 +10,42 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class UserService implements UserServiceImp {
 
     UserRepository userRepository;
-    RoleRepository roleRepository;
 
-    public User accountRegister(UserCreationRequest userCreationRequest) {
-
-        if(userRepository.existsByEmail(userCreationRequest.getEmail())) {
-            throw new RuntimeException("Email existed");
+    @Override
+    public UserDTO getUserById(String id) {
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("Id is not found");
         }
 
-        Role role = roleRepository.findById(userCreationRequest.getRoleId())
-                .orElseThrow(() -> new RuntimeException("Role Id not found"));
-
-        User user = User.builder()
-                .email(userCreationRequest.getEmail())
-                .password(userCreationRequest.getPassword())
-                .role(role)
+        User user = userRepository.getUserById(id);
+        UserDTO userDTO = UserDTO.builder()
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .roleName(user.getRole().getRoleName())
                 .build();
-        if (role.getRoleName().equals("ADMIN")) {
-//            DO something admin
+        return userDTO;
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        if(!userRepository.existsByEmail(email)) {
+            throw new RuntimeException("Email is not found");
         }
+        User user = userRepository.findByEmail(email);
+        return user;
+    }
 
-        if (role.getRoleName().equals("EMPLOYEE")) {
-            Candidate candidate = new Candidate();
-        }
+    @Override
+    public boolean updateUser(UserCreationRequest userCreationRequest) {
 
-        if (role.getRoleName().equals("EMPLOYER")) {
-            Candidate candidate = new Candidate();
-        }
-
-
-
-
-        return userRepository.save(user);
+        return false;
     }
 }

@@ -5,16 +5,15 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Entity(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class User {
+public abstract class User {
 
     @Id
-    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "user_id")
     String id;
 
     @Column(name = "email")
@@ -23,11 +22,17 @@ public class User {
     @Column(name = "password")
     String password;
 
+    @Column(name = "phone")
+    String phone;
+
+    public User(String email, String password, String phone, Role role) {
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.role = role;
+    }
+
     @ManyToOne
     @JoinColumn(name = "role_id")
     Role role;
-
-    @OneToOne()
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    Candidate candidate;
 }
