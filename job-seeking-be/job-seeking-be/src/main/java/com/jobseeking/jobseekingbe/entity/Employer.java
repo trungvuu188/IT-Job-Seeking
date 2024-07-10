@@ -9,16 +9,17 @@ import java.util.Set;
 
 @Entity(name = "employers")
 @Data
-@NoArgsConstructor
 @PrimaryKeyJoinColumn(name="user_id")
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Employer extends User {
 
-    @Column(name = "avatar")
-    String avatar;
-
     @Column(name = "emp_name")
     String companyName;
+
+    @Lob
+    @Column(name = "background")
+    String background;
 
     @Column(name = "website")
     String website;
@@ -35,27 +36,24 @@ public class Employer extends User {
     @Column(name = "linkedin")
     String linkedin;
 
-    @Column(name = "location")
-    String location;
-
-    @Column(name = "pro_id")
-    String pro_id;
-
     @Builder
-    public Employer(String email, String password, String phone, Role role, String avatar, String companyName, String website, String about, String address, String facebook, String linkedin, String location, String pro_id, Set<Post> posts) {
+    public Employer(String email, String password, String phone, Role role, String companyName, String background, String website, String about, String address, String facebook, String linkedin, Set<Post> posts, Province province) {
         super(email, password, phone, role);
-        this.avatar = avatar;
         this.companyName = companyName;
+        this.background = background;
         this.website = website;
         this.about = about;
         this.address = address;
         this.facebook = facebook;
         this.linkedin = linkedin;
-        this.location = location;
-        this.pro_id = pro_id;
         this.posts = posts;
+        this.province = province;
     }
 
     @OneToMany(mappedBy = "employer")
     Set<Post> posts;
+
+    @ManyToOne
+    @JoinColumn(name = "pro_id")
+    Province province;
 }

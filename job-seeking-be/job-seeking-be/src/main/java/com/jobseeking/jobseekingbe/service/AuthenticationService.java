@@ -6,14 +6,8 @@ import com.jobseeking.jobseekingbe.dto.request.IntrospectRequest;
 import com.jobseeking.jobseekingbe.dto.request.UserCreationRequest;
 import com.jobseeking.jobseekingbe.dto.response.AuthenticationResponse;
 import com.jobseeking.jobseekingbe.dto.response.IntrospectResponse;
-import com.jobseeking.jobseekingbe.entity.Candidate;
-import com.jobseeking.jobseekingbe.entity.Employer;
-import com.jobseeking.jobseekingbe.entity.Role;
-import com.jobseeking.jobseekingbe.entity.User;
-import com.jobseeking.jobseekingbe.repository.CandidateRepository;
-import com.jobseeking.jobseekingbe.repository.EmployerRepository;
-import com.jobseeking.jobseekingbe.repository.RoleRepository;
-import com.jobseeking.jobseekingbe.repository.UserRepository;
+import com.jobseeking.jobseekingbe.entity.*;
+import com.jobseeking.jobseekingbe.repository.*;
 import com.jobseeking.jobseekingbe.service.imp.AuthenticationServiceImp;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -45,6 +39,7 @@ public class AuthenticationService implements AuthenticationServiceImp {
     UserRepository userRepository;
     EmployerRepository employerRepository;
     CandidateRepository candidateRepository;
+    AdminRepository adminRepository;
     EmailService emailService;
     RoleRepository roleRepository;
 
@@ -61,13 +56,13 @@ public class AuthenticationService implements AuthenticationServiceImp {
 
         SignedJWT signedJWT = SignedJWT.parse(token);
 
-        Date expityTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+        Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
 
         var verified = signedJWT.verify(jwsVerifier);
 
         return IntrospectResponse.builder()
                 .email(getEmailFromToken(token))
-                .valid(verified && expityTime.after(new Date()))
+                .valid(verified && expirationTime.after(new Date()))
                 .build();
     }
 
@@ -85,6 +80,7 @@ public class AuthenticationService implements AuthenticationServiceImp {
                     .email(userCreationRequest.getEmail())
                     .password(userCreationRequest.getPassword())
                     .phone(userCreationRequest.getPhone())
+                    .companyName(userCreationRequest.getCompanyName())
                     .role(role)
                     .build();
             employerRepository.save(employer);
@@ -97,6 +93,16 @@ public class AuthenticationService implements AuthenticationServiceImp {
                     .role(role)
                     .build();
             candidateRepository.save(candidate);
+        }
+
+        if(role.getRoleName().equals("ADMIN")) {
+            Admin admin = Admin.builder()
+                    .email(userCreationRequest.getEmail())
+                    .password(userCreationRequest.getPassword())
+                    .phone(userCreationRequest.getPhone())
+                    .role(role)
+                    .build();
+            adminRepository.save(admin);
         }
 
         User user = userRepository.findByEmail(userCreationRequest.getEmail());
@@ -146,7 +152,7 @@ public class AuthenticationService implements AuthenticationServiceImp {
                 .issuer("jobseeking.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(
-                        Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
+                        Instant.now().plus(1, ChronoUnit.DAYS).toEpochMilli()
                 ))
                 .build();
 

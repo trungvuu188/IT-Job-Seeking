@@ -17,6 +17,11 @@ spring:
           auth: true
           starttls:
             enable: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+      enabled: true
 
 jwt:
   signerKey: "LHdv9EVi3BKZeBHVBzqPE35+0PzgIPPlEkDa+8WSugOj+QAXKDO3DfjPDhSYmkjN"

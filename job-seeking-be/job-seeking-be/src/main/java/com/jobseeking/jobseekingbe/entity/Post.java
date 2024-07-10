@@ -23,8 +23,8 @@ public class Post {
     @Column(name = "job_title")
     String jobTitle;
 
-    @Column(name = "status")
-    String status;
+    @Column(name = "job_desc")
+    String jobDesc;
 
     @Column(name = "min_salary")
     Long minSalary;
@@ -38,12 +38,12 @@ public class Post {
     @Column(name = "tech")
     String technologies;
 
-    @Column(name = "welfare")
-    String welfare;
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    PostStatus postStatus;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-//    @MapsId
     Employer employer;
 
     @OneToMany(mappedBy = "post")
@@ -57,4 +57,5 @@ public class Post {
 
     @OneToMany(mappedBy = "post")
     Set<PostContractDetail> postContractDetails;
+
 }

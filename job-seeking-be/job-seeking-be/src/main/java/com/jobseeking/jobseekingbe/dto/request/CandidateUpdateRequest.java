@@ -3,25 +3,22 @@ package com.jobseeking.jobseekingbe.dto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class UserUpdateRequest {
-    String token;
-    String fullname;
-    String email;
-    Date dob;
-    String position;
+public class CandidateUpdateRequest {
+    String fullName;
+    String dob;
+    String phone;
+    String workPosition;
     String currentSalary;
     String selfDesc;
-    int age;
+    String age;
     String gender;
-    int expectSalary;
+    String salaryExpect;
     String facebook;
-    String linkedin;
-    String location;
+    String linkedIn;
+    int location;
 }

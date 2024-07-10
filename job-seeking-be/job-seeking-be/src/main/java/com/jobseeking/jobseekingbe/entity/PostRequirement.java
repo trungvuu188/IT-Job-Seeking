@@ -13,8 +13,9 @@ import lombok.experimental.FieldDefaults;
 public class PostRequirement {
 
     @Id
-    @Column(name = "post_id")
-    int postId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "req_id")
+    int reqId;
 
     @Column(name = "req_title")
     String reqTitle;
@@ -23,6 +24,6 @@ public class PostRequirement {
     String reqDesc;
 
     @ManyToOne
-    @JoinColumn(name = "post_id", insertable=false, updatable=false)
+    @JoinColumn(name = "post_id")
     Post post;
 }

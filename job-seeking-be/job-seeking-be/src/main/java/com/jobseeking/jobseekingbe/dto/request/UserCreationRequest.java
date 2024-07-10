@@ -16,10 +16,20 @@ public class UserCreationRequest {
     String password;
     String phone;
     String companyName;
-//    ADMIN 1
-//    EMPLOYEE 2
-//    EMPLOYER 3
+
     public int getRoleId() {
-        return accountType.equals("candidate") ? 2 : 3;
+        int roleId = 0;
+        switch (accountType) {
+            case "admin":
+                roleId = 1;
+                break;
+            case "candidate":
+                roleId = 2;
+                break;
+            case "employer":
+                roleId = 3;
+                break;
+        }
+        return roleId;
     }
 }

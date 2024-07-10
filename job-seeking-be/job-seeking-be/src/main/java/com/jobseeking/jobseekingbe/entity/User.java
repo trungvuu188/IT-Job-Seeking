@@ -35,4 +35,8 @@ public abstract class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     Role role;
+
+    @OneToOne(mappedBy = "user")
+    @PrimaryKeyJoinColumn
+    Avatar avatar;
 }

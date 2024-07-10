@@ -1,15 +1,15 @@
 package com.jobseeking.jobseekingbe.controller;
 
 import com.jobseeking.jobseekingbe.dto.ApiResponse;
-import com.jobseeking.jobseekingbe.dto.request.ChangePasswordRequest;
-import com.jobseeking.jobseekingbe.dto.request.IntrospectRequest;
-import com.jobseeking.jobseekingbe.dto.request.ResetPasswordRequest;
-import com.jobseeking.jobseekingbe.dto.request.UserCreationRequest;
+import com.jobseeking.jobseekingbe.dto.request.*;
 import com.jobseeking.jobseekingbe.dto.response.AuthenticationResponse;
+import com.jobseeking.jobseekingbe.dto.response.CandidateDTO;
+import com.jobseeking.jobseekingbe.dto.response.EmployerDTO;
 import com.jobseeking.jobseekingbe.dto.response.UserDTO;
 import com.jobseeking.jobseekingbe.entity.Employer;
 import com.jobseeking.jobseekingbe.entity.User;
 import com.jobseeking.jobseekingbe.service.imp.AuthenticationServiceImp;
+import com.jobseeking.jobseekingbe.service.imp.CandidateServiceImp;
 import com.jobseeking.jobseekingbe.service.imp.EmployerServiceImp;
 import com.jobseeking.jobseekingbe.service.imp.UserServiceImp;
 import com.nimbusds.jose.JOSEException;
@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -33,6 +34,8 @@ public class UserController {
 
     UserServiceImp userServiceImp;
     AuthenticationServiceImp authenticationServiceImp;
+    CandidateServiceImp candidateServiceImp;
+    EmployerServiceImp employerServiceImp;
 
     @PostMapping()
     public ApiResponse<AuthenticationResponse> accountRegister(@RequestBody UserCreationRequest userCreationRequest) {
@@ -43,23 +46,40 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ApiResponse<UserDTO> getUserById(@PathVariable String id) {
-        var result = userServiceImp.getUserById(id);
         return ApiResponse.<UserDTO>builder()
-                .result(result)
+                .result(userServiceImp.getUserById(id))
                 .build();
     }
 
-    EmployerServiceImp employerServiceImp;
-    @PostMapping("/emp")
-    public ApiResponse<Employer> getEmp(@RequestBody ResetPasswordRequest email ) {
-        var result = employerServiceImp.getEmployer(email.getEmail());
-        return ApiResponse.<Employer>builder()
-                .result(result)
+    @PutMapping("/update/candidate/{id}")
+    public ApiResponse<Boolean> updateCandidate(@PathVariable String id,
+                                                @RequestBody CandidateUpdateRequest candidateUpdateRequest) throws ParseException {
+        return ApiResponse.<Boolean>builder()
+                .result(candidateServiceImp.updateCandidateInfo(id, candidateUpdateRequest))
                 .build();
     }
 
-//    @PutMapping("/update")
-//    public ApiResponse<String> updateUser
+    @GetMapping("/candidate/{id}")
+    public ApiResponse<CandidateDTO> getCandidateInfo(@PathVariable String id){
+        return ApiResponse.<CandidateDTO>builder()
+                .result(candidateServiceImp.getCandidateInfo(id))
+                .build();
+    }
+
+    @PutMapping("/update/employer/{id}")
+    public ApiResponse<Boolean> updateEmployer(@PathVariable String id,
+                                                @RequestBody EmployerUpdateRequest employerUpdateRequest) {
+        return ApiResponse.<Boolean>builder()
+                .result(employerServiceImp.updateEmployerInfo(id, employerUpdateRequest))
+                .build();
+    }
+
+    @GetMapping("/employer/{id}")
+    public ApiResponse<EmployerDTO> getEmployerInfo(@PathVariable String id){
+        return ApiResponse.<EmployerDTO>builder()
+                .result(employerServiceImp.getEmployerInfo(id))
+                .build();
+    }
 
 
 }
