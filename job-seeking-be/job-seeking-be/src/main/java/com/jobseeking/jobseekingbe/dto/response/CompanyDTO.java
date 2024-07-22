@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 public class CompanyDTO {
 
+    Boolean isBan;
     String companyId;
     String companyName;
     String desc;

@@ -14,6 +14,7 @@ public interface PostServiceImp {
 
     int savePost(Post post);
 
+    boolean deletePost(int postId);
     boolean updatePost(int id, PostUpdateRequest postUpdateRequest);
     List<PostDTO> getAllActivePost();
     PostDTO getPostById(int id);

@@ -25,11 +25,15 @@ public abstract class User {
     @Column(name = "phone")
     String phone;
 
-    public User(String email, String password, String phone, Role role) {
+    @Column(name = "is_ban")
+    Boolean isBan;
+
+    public User(String email, String password, String phone, Role role, Boolean isBan) {
         this.email = email;
         this.password = password;
         this.phone = phone;
         this.role = role;
+        this.isBan = isBan;
     }
 
     @ManyToOne

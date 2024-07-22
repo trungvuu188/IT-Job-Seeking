@@ -47,9 +47,4 @@ public class WebViewController {
                 .result(webViewServiceImp.getPostStatus())
                 .build();
     }
-    @PostMapping("/job")
-    public ApiResponse<List<PostDTO>> filterPost() {
-        return ApiResponse.<List<PostDTO>>builder()
-                .build();
-    }
 }

@@ -1,14 +1,12 @@
 package com.jobseeking.jobseekingbe.service;
 
+import com.jobseeking.jobseekingbe.dto.request.ApplyCVRequest;
 import com.jobseeking.jobseekingbe.dto.request.CandidateUpdateRequest;
 import com.jobseeking.jobseekingbe.dto.request.FileUploadRequest;
-import com.jobseeking.jobseekingbe.dto.response.CVDTO;
-import com.jobseeking.jobseekingbe.dto.response.CandidateDTO;
-import com.jobseeking.jobseekingbe.dto.response.CompanyDTO;
-import com.jobseeking.jobseekingbe.dto.response.PostSaveDTO;
+import com.jobseeking.jobseekingbe.dto.response.*;
 import com.jobseeking.jobseekingbe.entity.*;
-import com.jobseeking.jobseekingbe.entity.keys.KeyCandidateCV;
 import com.jobseeking.jobseekingbe.entity.keys.KeyEmployerCandidate;
+import com.jobseeking.jobseekingbe.entity.keys.KeyPostCV;
 import com.jobseeking.jobseekingbe.entity.keys.KeyPostCandidate;
 import com.jobseeking.jobseekingbe.repository.*;
 import com.jobseeking.jobseekingbe.service.imp.CandidateServiceImp;
@@ -38,7 +36,29 @@ public class CandidateService implements CandidateServiceImp {
     PostSaveRepository postSaveRepository;
     EmployerFollowRepository employerFollowRepository;
     CVRepository cvRepository;
-    CandidateCVRepository candidateCVRepository;
+    PostApplyRepository postApplyRepository;
+    PostApplyStatusRepository postApplyStatusRepository;
+    CandidateApplyRepository candidateApplyRepository;
+
+    @Override
+    public List<CandidateDTO> getAllCandidate() {
+        List<CandidateDTO> candidateDTOS = new ArrayList<>();
+        List<Candidate> candidates = candidateRepository.findAll();
+        for ( Candidate candidate : candidates ) {
+             CandidateDTO candidateDTO = CandidateDTO.builder()
+                     .isBan(candidate.getIsBan())
+                     .candidateId(candidate.getId())
+                     .avatar(candidate.getAvatar() != null ? java.util.Base64.getDecoder().decode(candidate.getAvatar().getData()) : null)
+                    .email(candidate.getEmail() != null ? candidate.getEmail() : "")
+                    .fullName(candidate.getFullName() != null ? candidate.getFullName() : "")
+                    .phone(candidate.getPhone() != null ? candidate.getPhone() : "")
+                    .age(candidate.getAge() != null ? candidate.getAge() : "")
+                    .location(candidate.getProvince() != null ? candidate.getProvince().getProvinceName() : "")
+                    .build();
+            candidateDTOS.add(candidateDTO);
+        }
+        return candidateDTOS;
+    }
 
     @Override
     public Candidate getCandidateById(String id) {
@@ -126,7 +146,7 @@ public class CandidateService implements CandidateServiceImp {
         Candidate candidate = candidateRepository.findCandidateById(userId);
         KeyPostCandidate keyPostCandidate = KeyPostCandidate.builder()
                 .postId(postId)
-                .userId(userId)
+                .candidateId(userId)
                 .build();
         PostSave postSave = PostSave.builder()
                 .keyPostCandidate(keyPostCandidate)
@@ -141,7 +161,7 @@ public class CandidateService implements CandidateServiceImp {
     @Override
     public boolean deletePostSave(String userId, int postId) {
         KeyPostCandidate keyPostCandidate = KeyPostCandidate.builder()
-                .userId(userId)
+                .candidateId(userId)
                 .postId(postId)
                 .build();
         postSaveRepository.deleteByKeyPostCandidate(keyPostCandidate);
@@ -152,7 +172,7 @@ public class CandidateService implements CandidateServiceImp {
     public List<PostSaveDTO> getAllPostSave(String userId) {
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        List<PostSave> postSaves = postSaveRepository.findAllByKeyPostCandidateUserId(userId);
+        List<PostSave> postSaves = postSaveRepository.findAllByKeyPostCandidateCandidateId(userId);
         List<PostSaveDTO> postSaveDTOS = new ArrayList<>();
 
         for ( PostSave postSave : postSaves ) {
@@ -162,7 +182,7 @@ public class CandidateService implements CandidateServiceImp {
                     .title(p.getJobTitle())
                     .companyName(p.getEmployer().getCompanyName())
                     .applicationDate(simpleDateFormat.format(p.getEndDate()))
-                    .image(java.util.Base64.getDecoder().decode(p.getEmployer().getAvatar().getData()))
+                    .image(p.getEmployer().getAvatar() != null ? java.util.Base64.getDecoder().decode(p.getEmployer().getAvatar().getData()) : null)
                     .build();
             postSaveDTOS.add(postSaveDTO);
         }
@@ -204,7 +224,7 @@ public class CandidateService implements CandidateServiceImp {
     @Override
     public List<CompanyDTO> getFollowCompanies(String userId) {
 
-        List<EmployerFollow> employerFollows = employerFollowRepository.findAll();
+        List<EmployerFollow> employerFollows = employerFollowRepository.findAllByKeyEmployerCandidateCandidateId(userId);
         List<CompanyDTO> companyDTOS = new ArrayList<>();
         for ( EmployerFollow employerFollow : employerFollows ) {
 
@@ -214,7 +234,7 @@ public class CandidateService implements CandidateServiceImp {
                     .companyName(employer.getCompanyName())
                     .locationName(employer.getProvince() != null ? employer.getProvince().getProvinceName() : "")
                     .postCount(postRepository.getAllByEmployerId(employer.getId()).size())
-                    .image(java.util.Base64.getDecoder().decode(employer.getAvatar().getData()))
+                    .image(employer.getAvatar() != null ? java.util.Base64.getDecoder().decode(employer.getAvatar().getData()) : null)
                     .build();
             companyDTOS.add(companyDTO);
         }
@@ -226,41 +246,95 @@ public class CandidateService implements CandidateServiceImp {
 
         Candidate candidate = candidateRepository.findCandidateById(fileUploadRequest.getUserId());
         CV cv = CV.builder()
+                .candidate(candidate)
                 .cvName(fileUploadRequest.getFile().getOriginalFilename())
                 .data(Base64.getEncoder().encodeToString(fileUploadRequest.getFile().getBytes()))
                 .build();
-        int cvId = saveCV(cv);
-        KeyCandidateCV keyCandidateCV = KeyCandidateCV.builder()
-                .cv_id(cvId)
-                .candidateId(candidate.getId())
-                .build();
-
-        CandidateCV candidateCV = CandidateCV.builder()
-                .keyCandidateCV(keyCandidateCV)
-                .cv(cv)
-                .candidate(candidate)
-                .build();
-        candidateCVRepository.save(candidateCV);
+        cvRepository.save(cv);
         return true;
     }
 
     @Override
     public List<CVDTO> getCVs(String userId) {
-        List<CandidateCV> candidateCVS = candidateCVRepository.findAllByKeyCandidateCVCandidateId(userId);
+        List<CV> cvs = cvRepository.getAllByCandidateId(userId);
         List<CVDTO> cvdtos = new ArrayList<>();
-        for ( CandidateCV candidateCV : candidateCVS ) {
+        for ( CV cv : cvs ) {
             CVDTO cvdto = CVDTO.builder()
-                    .fileName(candidateCV.getCv().getCvName())
-                    .data(java.util.Base64.getDecoder().decode(candidateCV.getCv().getData()))
+                    .fileId(cv.getCvId())
+                    .fileName(cv.getCvName())
+                    .data(java.util.Base64.getDecoder().decode(cv.getData()))
                     .build();
             cvdtos.add(cvdto);
         }
         return cvdtos;
     }
 
-    public int saveCV(CV cv) {
-        cvRepository.save(cv);
-        return cv.getCvId();
+    @Transactional
+    @Override
+    public boolean deleteCV(String userId, int fileId) {
+//        candidateApplyRepository.deleteByKeyPostCandidateCandidateIdAndKeyPostCandidatePostId();
+        cvRepository.deleteByCandidateIdAndCvId(userId, fileId);
+        return true;
+    }
+
+    @Override
+    public boolean applyCV(ApplyCVRequest applyCVRequest) {
+
+        Post post = postRepository.findById(applyCVRequest.getPostId())
+                .orElseThrow(() -> new RuntimeException("Post is not found"));
+
+        PostApplyStatus postApplyStatus = postApplyStatusRepository.findByStatusTitle("PENDING");
+
+        KeyPostCandidate keyPostCandidate = KeyPostCandidate.builder()
+                .candidateId(applyCVRequest.getUserId())
+                .postId(applyCVRequest.getPostId())
+                .build();
+
+        PostApply postApply = PostApply.builder()
+                .keyPostCandidate(keyPostCandidate)
+                .post(post)
+                .postApplyStatus(postApplyStatus)
+                .build();
+        postApplyRepository.save(postApply);
+
+        CV cv = cvRepository.findById(applyCVRequest.getCvId())
+                .orElseThrow(() -> new RuntimeException("CV is not found"));
+
+        CandidateApply candidateApply = CandidateApply.builder()
+                .keyPostCandidate(keyPostCandidate)
+                .cvData(cv.getData())
+                .postApplyStatus(postApplyStatus)
+                .post(post)
+                .build();
+        candidateApplyRepository.save(candidateApply);
+
+        return true;
+    }
+
+    @Override
+    public List<PostApplyDTO> getAllPostApply(String userId) {
+
+        List<PostApplyDTO> postApplyDTOS = new ArrayList<>();
+        List<PostApply> postApplies = postApplyRepository.findAllByKeyPostCandidateCandidateId(userId);
+        for ( PostApply postApply : postApplies ) {
+            PostApplyDTO postApplyDTO = PostApplyDTO.builder()
+                    .postId(postApply.getPost().getPostId())
+                    .title(postApply.getPost().getJobTitle())
+                    .applicationDate(formatDate(postApply.getPost().getEndDate()))
+                    .companyName(postApply.getPost().getEmployer().getCompanyName())
+                    .image(postApply.getPost().getEmployer().getAvatar() != null ? java.util.Base64.getDecoder().decode(postApply.getPost().getEmployer().getAvatar().getData()) : null)
+                    .status(postApply.getPostApplyStatus().getStatusTitle())
+                    .build();
+            postApplyDTOS.add(postApplyDTO);
+        }
+        return postApplyDTOS;
+    }
+
+    @Transactional
+    @Override
+    public boolean deletePostApply(String userId, int postId) {
+        postApplyRepository.deleteByKeyPostCandidateCandidateIdAndKeyPostCandidatePostId(userId, postId);
+        return true;
     }
 
     public Date parseDate(String date) throws ParseException {

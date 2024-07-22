@@ -12,4 +12,5 @@ public class AuthenticationResponse {
     String token;
     String userId;
     String userRole;
+    Boolean isBan;
 }

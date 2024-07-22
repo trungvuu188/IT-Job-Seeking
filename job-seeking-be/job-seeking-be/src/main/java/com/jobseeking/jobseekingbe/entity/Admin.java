@@ -21,7 +21,7 @@ public class Admin extends User {
 
     @Builder
     public Admin(String email, String password, String phone, Role role, String fullName) {
-        super(email, password, phone, role);
+        super(email, password, phone, role, false);
         this.fullName = fullName;
     }
 }

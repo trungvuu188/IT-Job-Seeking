@@ -4,12 +4,15 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CVDTO {
-    int fileId;
-    String fileName;
-    byte[] data;
+public class PostApplyDTO {
+    int postId;
+    byte[] image;
+    String title;
+    String companyName;
+    String applicationDate;
+    String status;
 }

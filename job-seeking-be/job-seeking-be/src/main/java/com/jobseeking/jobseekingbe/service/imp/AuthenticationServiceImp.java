@@ -22,6 +22,9 @@ public interface AuthenticationServiceImp {
 
     boolean updatePassword(String email, String newPassword);
 
+    boolean banUser(String userId);
+    boolean unBanUser(String userId);
+
     String getEmailFromToken(String token) throws JOSEException, ParseException;
 
 }

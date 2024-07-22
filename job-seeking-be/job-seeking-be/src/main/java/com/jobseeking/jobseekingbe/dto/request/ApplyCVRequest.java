@@ -1,4 +1,4 @@
-package com.jobseeking.jobseekingbe.dto.response;
+package com.jobseeking.jobseekingbe.dto.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,8 +8,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CVDTO {
-    int fileId;
-    String fileName;
-    byte[] data;
+public class ApplyCVRequest {
+    String userId;
+    int cvId;
+    int postId;
 }

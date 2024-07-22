@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface PostSaveRepository extends JpaRepository<PostSave, KeyPostCandidate> {
 
-    List<PostSave> findAllByKeyPostCandidateUserId(String userId);
+    List<PostSave> findAllByKeyPostCandidateCandidateId(String userId);
 
     void deleteByKeyPostCandidate(KeyPostCandidate keyPostCandidate);
 }

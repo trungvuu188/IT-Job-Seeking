@@ -125,6 +125,7 @@ public class AuthenticationService implements AuthenticationServiceImp {
         String token = null;
         String userRole = null;
         String userId = null;
+        Boolean isBan = false;
 
         if(userRepository.existsByEmail(authenticationRequest.getEmail())) {
             User user = userRepository.findByEmail(authenticationRequest.getEmail());
@@ -133,12 +134,14 @@ public class AuthenticationService implements AuthenticationServiceImp {
                 userRole = user.getRole().getRoleName();
                 userId = user.getId();
                 token = generateToken(authenticationRequest.getEmail());
+                isBan = user.getIsBan();
             }
         };
 
         return AuthenticationResponse.builder()
                 .userRole(userRole)
                 .userId(userId)
+                .isBan(isBan)
                 .token(token)
                 .build();
     }
@@ -190,6 +193,23 @@ public class AuthenticationService implements AuthenticationServiceImp {
         userRepository.save(user);
         return true;
     }
+
+    @Override
+    public boolean banUser(String userId) {
+        User user = userRepository.getUserById(userId);
+        user.setIsBan(true);
+        userRepository.save(user);
+        return true;
+    }
+
+    @Override
+    public boolean unBanUser(String userId) {
+        User user = userRepository.getUserById(userId);
+        user.setIsBan(false);
+        userRepository.save(user);
+        return true;
+    }
+
     @Override
     public boolean changePassword(ChangePasswordRequest changePasswordRequest) throws ParseException, JOSEException {
         String email = getEmailFromToken(changePasswordRequest.getToken());

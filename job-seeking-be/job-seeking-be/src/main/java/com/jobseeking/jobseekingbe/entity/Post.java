@@ -61,4 +61,9 @@ public class Post {
     @OneToMany(mappedBy = "post")
     Set<PostSave> postSaves;
 
+    @OneToMany(mappedBy = "post")
+    Set<PostApply> postApplies;
+
+    @OneToMany(mappedBy = "post")
+    Set<CandidateApply> candidateApplies;
 }

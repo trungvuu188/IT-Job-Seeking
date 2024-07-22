@@ -17,7 +17,7 @@ public class PostSave {
     KeyPostCandidate keyPostCandidate;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", insertable=false, updatable=false)
+    @JoinColumn(name = "candidate_id", insertable=false, updatable=false)
     Candidate candidate;
 
     @ManyToOne

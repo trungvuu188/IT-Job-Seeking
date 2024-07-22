@@ -1,10 +1,9 @@
 package com.jobseeking.jobseekingbe.entity;
 
 import com.jobseeking.jobseekingbe.entity.keys.KeyEmployerCandidate;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
+import com.jobseeking.jobseekingbe.entity.keys.KeyPostCV;
+import com.jobseeking.jobseekingbe.entity.keys.KeyPostCandidate;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,14 +14,24 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(KeyEmployerCandidate.class)
 public class CandidateApply {
 
-    @Id
-    @Column(name = "candidate_id")
-    String candidateId;
+    @EmbeddedId
+    KeyPostCandidate keyPostCandidate;
 
-    @Id
-    @Column(name = "employer_id")
-    String employerId;
+    @ManyToOne
+    @JoinColumn(name = "post_id", insertable=false, updatable=false)
+    Post post;
+
+    @ManyToOne
+    @JoinColumn(name = "candidate_id", insertable=false, updatable=false)
+    Candidate candidate;
+
+    @Lob
+    @Column(name = "cv_data")
+    String cvData;
+
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    PostApplyStatus postApplyStatus;
 }

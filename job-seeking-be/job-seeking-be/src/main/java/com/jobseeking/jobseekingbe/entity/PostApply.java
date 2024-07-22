@@ -1,5 +1,6 @@
 package com.jobseeking.jobseekingbe.entity;
 
+import com.jobseeking.jobseekingbe.entity.keys.KeyPostCV;
 import com.jobseeking.jobseekingbe.entity.keys.KeyPostCandidate;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,14 +13,20 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(KeyPostCandidate.class)
 public class PostApply {
 
-    @Id
-    @Column(name = "user_id")
-    String userId;
+    @EmbeddedId
+    KeyPostCandidate keyPostCandidate;
 
-    @Id
-    @Column(name = "post_id")
-    int postId;
+    @ManyToOne
+    @JoinColumn(name = "candidate_id", insertable=false, updatable=false)
+    Candidate candidate;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id", insertable=false, updatable=false)
+    Post post;
+
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    PostApplyStatus postApplyStatus;
 }

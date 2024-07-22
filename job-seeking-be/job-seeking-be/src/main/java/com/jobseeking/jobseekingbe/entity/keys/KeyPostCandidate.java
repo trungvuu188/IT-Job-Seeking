@@ -13,8 +13,8 @@ import java.io.Serializable;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class KeyPostCandidate implements Serializable {
-    @Column(name = "user_id")
-    String userId;
+    @Column(name = "candidate_id")
+    String candidateId;
 
     @Column(name = "post_id")
     int postId;

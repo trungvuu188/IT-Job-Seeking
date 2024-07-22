@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity(name = "cv")
@@ -15,6 +16,7 @@ import java.util.Set;
 public class CV {
 
     @Id
+    @Column(name = "cv_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int cvId;
 
@@ -25,6 +27,7 @@ public class CV {
     @Column(name = "data")
     String data;
 
-    @OneToMany(mappedBy = "cv")
-    Set<CandidateCV> candidateCVSet;
+    @ManyToOne
+    @JoinColumn(name = "candidate_id")
+    Candidate candidate;
 }

@@ -9,6 +9,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class CandidateDTO {
+    boolean isBan;
+    String candidateId;
+    byte[] avatar;
     String email;
     String fullName;
     String dob;

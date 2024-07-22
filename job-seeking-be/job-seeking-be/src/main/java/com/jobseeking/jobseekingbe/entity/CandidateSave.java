@@ -14,14 +14,20 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(KeyEmployerCandidate.class)
 public class CandidateSave {
 
-    @Id
-    @Column(name = "candidate_id")
-    String candidateId;
+    @EmbeddedId
+    KeyEmployerCandidate keyEmployerCandidate;
 
-    @Id
-    @Column(name = "employer_id")
-    String employerId;
+    @ManyToOne
+    @JoinColumn(name = "candidate_id", insertable=false, updatable=false)
+    Candidate candidate;
+
+    @ManyToOne
+    @JoinColumn(name = "employer_id", insertable=false, updatable=false)
+    Employer employer;
+
+    @Lob
+    @Column(name = "cv_data")
+    String cvData;
 }

@@ -38,7 +38,7 @@ public class Employer extends User {
 
     @Builder
     public Employer(String email, String password, String phone, Role role, String companyName, String background, String website, String about, String address, String facebook, String linkedin, Set<Post> posts, Province province) {
-        super(email, password, phone, role);
+        super(email, password, phone, role, false);
         this.companyName = companyName;
         this.background = background;
         this.website = website;

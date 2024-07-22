@@ -32,4 +32,5 @@ public class PostDTO {
     List<PostContractDTO> contracts;
     PostRequirementDTO postRequirementDTO;
     String tech;
+    int candidateApply;
 }

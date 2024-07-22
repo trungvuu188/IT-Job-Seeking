@@ -9,4 +9,6 @@ import java.util.Set;
 @Repository
 public interface PostRequirementRepository extends JpaRepository<PostRequirement, Integer> {
     Set<PostRequirement> findAllByPostPostId(int postId);
+
+    void deleteAllByPostPostId(int postId);
 }

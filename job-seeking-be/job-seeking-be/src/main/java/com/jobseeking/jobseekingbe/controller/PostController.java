@@ -38,6 +38,13 @@ public class PostController {
                 .build();
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ApiResponse<Boolean> deletePost(@PathVariable int id) {
+        return ApiResponse.<Boolean>builder()
+                .result(postServiceImp.deletePost(id))
+                .build();
+    }
+
     @GetMapping("/status/{id}")
     public ApiResponse<List<PostDTO>> getPostByStatus(@PathVariable int id) {
         return ApiResponse.<List<PostDTO>>builder()

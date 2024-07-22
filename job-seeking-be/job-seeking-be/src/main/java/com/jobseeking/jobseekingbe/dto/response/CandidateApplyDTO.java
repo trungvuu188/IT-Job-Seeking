@@ -8,8 +8,13 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CVDTO {
-    int fileId;
-    String fileName;
-    byte[] data;
+public class CandidateApplyDTO {
+    String candidateId;
+    int postId;
+    int cvId;
+    byte[] avatar;
+    String status;
+    String candidateName;
+    byte[] cvData;
+    String postName;
 }

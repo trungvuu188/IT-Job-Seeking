@@ -48,7 +48,7 @@ public class Candidate extends User {
 
     @Builder
     public Candidate(String email, String password, String phone, Role role, String fullName, Date dob, String position, String currentSalary, String selfDesc, String gender, String age, String salaryExpect, String facebook, String linkedin, Province province) {
-        super(email, password, phone, role);
+        super(email, password, phone, role, false);
         this.fullName = fullName;
         this.dob = dob;
         this.position = position;
@@ -73,5 +73,11 @@ public class Candidate extends User {
     Set<EmployerFollow> employerFollows;
 
     @OneToMany(mappedBy = "candidate")
-    Set<CandidateCV> candidateCVSet;
+    Set<CV> cvSet;
+
+    @OneToMany(mappedBy = "candidate")
+    Set<PostApply> postApplies;
+
+    @OneToMany(mappedBy = "candidate")
+    Set<CandidateApply> candidateApplies;
 }

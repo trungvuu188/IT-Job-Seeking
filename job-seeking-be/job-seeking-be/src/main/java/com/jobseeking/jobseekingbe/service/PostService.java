@@ -45,6 +45,7 @@ public class PostService implements PostServiceImp {
     AuthenticationServiceImp authenticationServiceImp;
     PostRequirementRepository postRequirementRepository;
     PostStatusRepository postStatusRepository;
+    PostApplyRepository postApplyRepository;
     String POST_REQUIREMENT_ROLE = "ROLE";
     String POST_REQUIREMENT_SKILL = "SKILL";
     String POST_REQUIREMENT_BENEFIT = "BENEFIT";
@@ -68,6 +69,17 @@ public class PostService implements PostServiceImp {
     public int savePost(Post post) {
         postRepository.save(post);
         return post.getPostId();
+    }
+
+    @Transactional
+    @Override
+    public boolean deletePost(int postId) {
+        postContractDetailRepository.deleteAllByKeyPostContractPostId(postId);
+        postRequirementRepository.deleteAllByPostPostId(postId);
+        postTypeDetailRepository.deleteAllByKeyPostTypePostId(postId);
+        postLevelDetailRepository.deleteAllByKeyPostLevelPostId(postId);
+        postRepository.deleteById(postId);
+        return true;
     }
 
     @Transactional
@@ -165,7 +177,7 @@ public class PostService implements PostServiceImp {
         List<PostDTO> posts = new ArrayList<>();
         for ( Post post : postRepository.findAll() ) {
             if (post.getPostStatus().getStatusTitle().equalsIgnoreCase("ACTIVE")) {
-                PostDTO postDTO = getPostById(post.getPostId());
+                PostDTO postDTO = postMapper(post);
                 posts.add(postDTO);
             }
         }
@@ -495,6 +507,7 @@ public class PostService implements PostServiceImp {
         byte[] postImageBytes = null;
         byte[] backgroundBytes = null;
         Avatar avatar = post.getEmployer().getAvatar();
+        List<PostApply> postApplies = postApplyRepository.findAllByKeyPostCandidatePostId(post.getPostId());
 
         if(avatar != null) {
             postImageBytes = java.util.Base64.getDecoder().decode(avatar.getData());
@@ -556,6 +569,7 @@ public class PostService implements PostServiceImp {
                 .contracts(postContractDTOS)
                 .tech(post.getTechnologies())
                 .postRequirementDTO(postRequirementDTO)
+                .candidateApply(postApplies.size())
                 .build();
     }
 

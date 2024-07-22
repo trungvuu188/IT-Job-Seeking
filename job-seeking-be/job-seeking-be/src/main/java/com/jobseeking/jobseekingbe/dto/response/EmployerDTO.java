@@ -9,7 +9,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class EmployerDTO {
+    String id;
     String email;
+    byte[] image;
     String companyName;
     String phone;
     String website;

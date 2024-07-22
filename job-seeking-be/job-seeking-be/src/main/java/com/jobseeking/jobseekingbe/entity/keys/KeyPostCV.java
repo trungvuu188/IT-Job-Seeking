@@ -1,6 +1,8 @@
 package com.jobseeking.jobseekingbe.entity.keys;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,10 +13,11 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class KeyCandidateCV implements Serializable {
-    @Column(name = "candidate_id")
-    String candidateId;
+public class KeyPostCV implements Serializable {
+
+    @Column(name = "post_id")
+    int postId;
 
     @Column(name = "cv_id")
-    int cv_id;
+    int cvId;
 }
